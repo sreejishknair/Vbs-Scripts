@@ -1,3 +1,10 @@
+
+'==================================================== 
+
+'Script  for post patching validation . 
+Created by : Sreejish K Nair ( sreejish.nair@gmail.com)
+'=====================================================
+
 Const CONVERT_TO_LOCAL_TIME = True
 dim strLogType
 dim usercount
@@ -32,7 +39,7 @@ objLogFile.Writeline
 
 'Main loop Starts Here
 '=====================================================
-objLogFile.Writeline("Host Name,Ping Status,Memory,OS,Last Boot Time, Stopped Servies with Auto startup,Count of patch,hotfixes") 
+objLogFile.Writeline("Host Name,Ping Status,CDriveFreeSpace%,Memory,OS,Last Boot Time, Stopped Servies with Auto startup,Count of patch,hotfixes") 
 Do Until objTextFile.AtEndOfStream
 
 	strcomputer = Trim(objTextFile.Readline)
@@ -69,7 +76,25 @@ Do Until objTextFile.AtEndOfStream
 
 	If pingstatus = 1 then
   
- 
+ 'check C Drive Space  
+'=====================================================
+Const HARD_DISK = 3
+Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")
+Set colDisks = objWMIService.ExecQuery ("SELECT * FROM Win32_LogicalDisk WHERE DriveType = " & HARD_DISK & "")
+For Each objDisk in colDisks
+ 	'Wscript.Echo "Device ID: " & objDisk.DeviceID 
+        If objDisk.DeviceID ="C:" Then
+		'Wscript.Echo "Free Disk Space: " & objDisk.FreeSpace
+		'Wscript.Echo "Free Disk Space: " & objDisk.Size
+		perc=round((objDisk.FreeSpace/objDisk.Size)*100,2)
+		'Wscript.Echo " % Free Disk Space: " & perc&"%"
+                objLogFile.Write(perc)&","
+       End If
+Next
+
+
+
+
 
 'check Operating System , Service Pack
 '=====================================================
