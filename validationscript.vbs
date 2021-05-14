@@ -39,7 +39,7 @@ objLogFile.Writeline
 
 'Main loop Starts Here
 '=====================================================
-objLogFile.Writeline("Host Name,Ping Status,CDriveFreeSpace%,Memory,OS,Last Boot Time, Stopped Servies with Auto startup,Count of patch,hotfixes") 
+objLogFile.Writeline("Host Name,Ping Status,CDriveFreeSpace(GB),Memory,OS,Last Boot Time, Stopped Servies with Auto startup,Count of patch,hotfixes") 
 Do Until objTextFile.AtEndOfStream
 
 	strcomputer = Trim(objTextFile.Readline)
@@ -88,7 +88,7 @@ For Each objDisk in colDisks
 		'Wscript.Echo "Free Disk Space: " & objDisk.Size
 		perc=round((objDisk.FreeSpace/objDisk.Size)*100,2)
 		'Wscript.Echo " % Free Disk Space: " & perc&"%"
-                objLogFile.Write(perc)&","
+                objLogFile.Write(round((objDisk.FreeSpace/1000000000),2))&","
        End If
 Next
 
@@ -192,6 +192,10 @@ objLogFile.Close ' ----------- Closing the csv file .
 
 
 Msgbox "Done"
+
+
+
+
 
 
 
